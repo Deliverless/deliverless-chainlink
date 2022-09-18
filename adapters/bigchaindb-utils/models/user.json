@@ -1,0 +1,13 @@
+{
+  "role": "",
+  "firstName": "",
+  "lastName": "",
+  "birthday": "",
+  "email": "",
+  "addresses": [],
+  "phone": "",
+  "orderIds": [],
+  "encoded": "",
+  "images": [],
+  "keypair": {}
+}

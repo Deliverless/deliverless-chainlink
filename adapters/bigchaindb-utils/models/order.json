@@ -1,0 +1,19 @@
+{
+  "userId": "",
+  "driverId": "",
+  "restaurantId": "",
+  "transactionId": "",
+  "delivery": {
+    "addressId": "",
+    "is-pickup": ""
+  },
+  "status": "",
+  "discount": "",
+  "tax": "",
+  "driverFee": "",
+  "subtotal": "",
+  "total": "",
+  "timestamp": "",
+  "sessionId": "",
+  "items": []
+}
