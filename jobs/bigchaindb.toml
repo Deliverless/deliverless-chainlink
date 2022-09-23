@@ -2,7 +2,7 @@ type = "directrequest"
 schemaVersion = 1
 name = "bigchaindb"
 externalJobID = "220a1cc9-ca2b-43b6-bc61-34b25568ad92"
-contractAddress = "0x02bF4751574882b27d034Fc4F835A30103f8dfd8"
+contractAddress = "0x85D8ec63ECb5C037dAFb1fB87A81398805baCAbD"
 maxTaskDuration = "0s"
 observationSource = """
     decode_log   [type="ethabidecodelog"
@@ -17,7 +17,7 @@ observationSource = """
                   abi="fulfillOracleRequest2(bytes32 requestId, uint256 payment, address callbackAddress, bytes4 callbackFunctionId, uint256 expiration, bytes data)"
                   data="{\\"requestId\\": $(decode_log.requestId), \\"payment\\": $(decode_log.payment), \\"callbackAddress\\": $(decode_log.callbackAddr), \\"callbackFunctionId\\": $(decode_log.callbackFunctionId), \\"expiration\\": $(decode_log.cancelExpiration), \\"data\\": $(encode_data)}"
                  ]
-    submit_tx    [type="ethtx" to="0x02bF4751574882b27d034Fc4F835A30103f8dfd8" data="$(encode_tx)"]
+    submit_tx    [type="ethtx" to="0x85D8ec63ECb5C037dAFb1fB87A81398805baCAbD" data="$(encode_tx)"]
 
     decode_log -> decode_cbor -> fetch -> encode_data -> encode_tx -> submit_tx
 """

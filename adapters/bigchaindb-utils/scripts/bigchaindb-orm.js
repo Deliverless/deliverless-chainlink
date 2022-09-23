@@ -1,5 +1,5 @@
 const models = require('../models/index.js')
-const bigchaindbOrm = require('bigchaindb-orm')
+const bigchaindbOrm = require('../modules/bigchaindb-orm/dist/node/index.js')
 const Orm = bigchaindbOrm.default
 
 class BigchainDB {
@@ -59,18 +59,20 @@ class BigchainDB {
    */
   async getObjectsByMetadata (model, metadata, limit, debug = this.debug) {
     if (!this.bdbOrm.models[model]) { this.bdbOrm.define(model, models[model]) }
-    const metadataValue = Object.values(metadata)[0]
-    const searchMeta = await this.bdbOrm.connection.conn.searchMetadata(metadataValue)
-    const resObjects = await Promise.all(searchMeta.map(async (meta) => {
-      const assets = await this.bdbOrm.models[model].retrieve(meta.id)
-      if (assets.length > 0) {
-        // if (debug) console.log('asset:', assets[0])
-        return assets[0]
-      } else { console.log('No asset(s) found') }
+    const metadataValue = Object.keys(metadata)[0]
+    if (debug) console.log('metadataValue:', metadataValue)
+    const allObjects = await this.bdbOrm.models[model].retrieve()
+    if (debug) console.log('Object count:', allObjects.length)
+    const resObjects = await Promise.all(allObjects.map(async (asset, index) => {
+      if (debug) console.log('iteration:', index, 'asset:', asset.data[metadataValue])
+      if (asset.data[metadataValue] === metadata[metadataValue]) {
+        return asset
+      }
     }))
-    if (debug) console.log('resObject:', resObjects[0])
-    return resObjects.map((asset) => { return { id: String(asset.id), ...asset._schema, ...asset.data } })[0]
-  };
+    const filteredObjects = resObjects.filter((asset) => { return asset !== undefined })
+    if (debug) console.log('filteredObjects:', filteredObjects)
+    return filteredObjects.map((asset) => { return { id: String(asset.id), ...asset._schema, ...asset.data } })[0]
+  }
 
   /**
    * Append data to an object
@@ -85,8 +87,9 @@ class BigchainDB {
     if (!this.bdbOrm.models[model]) { this.bdbOrm.define(model, models[model]) }
     if (model && assetId && data && keypair) {
       // get the asset
-      const resObjects = await this.bdbOrm.models[model].retrieve(assetId).then((assets) => {
+      const resObject = await this.bdbOrm.models[model].retrieve(assetId).then((assets) => {
         // append to the asset
+        if (debug) console.log('assets:', assets)
         if (assets.length > 0) {
           if (debug) console.log('asset retrieved:', assets[0])
           assets[0].append({
@@ -95,9 +98,11 @@ class BigchainDB {
             data: data
           })
           return assets[0]
+        } else {
+          if (debug) console.log('No asset found with id:', assetId)
         }
       })
-      return { id: String(resObjects.id), ...resObjects._schema, ...resObjects.data }
+      return { id: String(resObject.id), ...resObject._schema, ...Object.assign({}, resObject.data, data) }
     } else {
       console.log('The following args are missing: ' % (model, assetId, data, keypair))
     }
