@@ -93,13 +93,13 @@ class Requester {
   }
 
   static success (jobRunID = '1', response) {
-    if (!response.data.hasOwnProperty('result')) {
-      response.data.result = null
+    if (!response.hasOwnProperty('result')) {
+      response.result = null
     }
     return {
       jobRunID,
-      data: response.data,
-      result: response.data.result,
+      data: response.data || {},
+      result: response.result,
       statusCode: response.status
     }
   }
