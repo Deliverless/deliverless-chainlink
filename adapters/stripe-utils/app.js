@@ -3,7 +3,7 @@ const createRequest = require('./index').createRequest
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const port = 6060
+const port = process.env.EA_PORT || 6080
 
 app.use(bodyParser.json())
 
