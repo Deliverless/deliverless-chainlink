@@ -9,15 +9,16 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "@chainlink/external-adapter": "^0.2.3"
+    "@chainlink/external-adapter": "^0.2.3",
+    "base-64": "^1.0.0"
   },
   "devDependencies": {
-    "bip39": "^3.0.4",
-    "bookshelf": "0.9.2",
     "@babel/runtime": "^7.19.0",
     "bigchaindb-driver": "^4.3.0",
     "bigchaindb-orm": "^3.0.3",
+    "bip39": "^3.0.4",
     "body-parser": "^1.19.0",
+    "bookshelf": "0.9.2",
     "chai": "^4.2.0",
     "eslint": "^7.0.0",
     "eslint-config-standard": "^14.1.1",

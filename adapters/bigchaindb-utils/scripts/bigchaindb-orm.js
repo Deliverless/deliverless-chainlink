@@ -57,7 +57,7 @@ class BigchainDB {
    * @param { * } metadata - The metadata to search for
    * @param { * } debug - Whether to print debug messages (optional)
    */
-  async getObjectsByMetadata (model, metadata, limit, debug = this.debug) {
+  async getObjectsByMetadata (model, metadata, limit = 1, debug = this.debug) {
     if (!this.bdbOrm.models[model]) { this.bdbOrm.define(model, models[model]) }
     const metadataValue = Object.keys(metadata)[0]
     if (debug) console.log('metadataValue:', metadataValue)
@@ -71,7 +71,13 @@ class BigchainDB {
     }))
     const filteredObjects = resObjects.filter((asset) => { return asset !== undefined })
     if (debug) console.log('filteredObjects:', filteredObjects)
-    return filteredObjects.map((asset) => { return { id: String(asset.id), ...asset._schema, ...asset.data } })[0]
+    if (limit === 1) {
+      return filteredObjects.map((asset) => { return { id: String(asset.id), ...asset._schema, ...asset.data } })[0]
+    } else if (limit > 1) {
+      return filteredObjects.map((asset) => { return { id: String(asset.id), ...asset._schema, ...asset.data } }).slice(0, limit)
+    } else if (limit === 0) {
+      return filteredObjects.map((asset) => { return { id: String(asset.id), ...asset._schema, ...asset.data } })
+    }
   }
 
   /**

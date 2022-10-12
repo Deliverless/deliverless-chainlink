@@ -1,6 +1,7 @@
 const BigchainDB = require('./scripts/bigchaindb-orm.js')
 const bip39 = require('bip39')
 const { Requester, Validator } = require('./modules/@chainlink/external-adapter')
+// const base64 = require('base-64')
 
 const createRequest = async (input, callback) => {
   const bigchaindb = new BigchainDB('http://24.150.93.243', false)
@@ -19,6 +20,7 @@ const createRequest = async (input, callback) => {
       if (input.data.method === 'add') {
         response = await bigchaindb.createObject(input.data.model, meta, keypair)
       } else if (input.data.method === 'find') {
+        console.log('find', input.data)
         response = await bigchaindb.getObjectsByMetadata(input.data.model, meta, input.data.limit)
       } else if (input.data.method === 'get') {
         response = await bigchaindb.getObjectsById(input.data.model, input.data.id)
@@ -30,6 +32,7 @@ const createRequest = async (input, callback) => {
         callback(200, Requester.success(jobRunID, { data: response, result: response ? 'success' : 'empty', status: 200 }))
       }
     }
+    response = Buffer.from(JSON.stringify(response)).toString('utf-8')
     callback(200, Requester.success(jobRunID, { data: response, result: response ? 'success' : 'empty', status: 200 }))
   } catch (error) {
     callback(500, Requester.errored(jobRunID, 'Something went wrong: ' + error))
